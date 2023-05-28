@@ -6,7 +6,6 @@ import { Book } from './interfaces/book.interface';
 
 @Injectable()
 export class BooksService {
-  private books = [{ id: 1, title: 'Animal Farm' }];
 
   constructor(
     @Inject('BOOK_MODEL')
@@ -22,15 +21,18 @@ export class BooksService {
     return this.bookModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  findOne(id: string) {
+    return this.bookModel.findById(id).exec();
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  update(id: string, updateBookDto: UpdateBookDto) {
+    const updatedBook = this.bookModel
+      .findOneAndUpdate({ _id: id }, { $set: updateBookDto }, { new: true })
+      .exec();
+    return updatedBook;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  remove(id: string) {
+    return this.bookModel.deleteOne({ _id: id }).exec();
   }
 }
